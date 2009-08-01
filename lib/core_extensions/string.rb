@@ -1,5 +1,5 @@
 class String
-  def to_ostype
+  def to_bytes
     bytes = 0
     self.each_byte do |byte|
       bytes <<= 8

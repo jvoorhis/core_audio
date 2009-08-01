@@ -10,9 +10,9 @@ module ComponentManager
     
     def self.from_hash(hash)
       desc = new
-      desc[:componentType]         = hash[:type].to_ostype
-      desc[:componentSubType]      = hash[:sub_type].to_ostype
-      desc[:componentManufacturer] = hash[:manufacturer].to_ostype
+      desc[:componentType]         = OSType(hash[:type])
+      desc[:componentSubType]      = OSType(hash[:sub_type])
+      desc[:componentManufacturer] = OSType(hash[:manufacturer])
       desc[:componentFlags]        = hash.fetch(:flags, 0)
       desc[:componentFlagsMask]    = hash.fetch(:flags_mask, 0)
       desc

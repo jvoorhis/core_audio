@@ -125,7 +125,7 @@ module AudioToolbox
         }
         au = AudioUnit::AudioUnit.new(au_ptr.read_pointer)
         case component_description[:componentType]
-        when 'aumu'.to_ostype
+        when OSType('aumu')
           au.extend(AudioUnit::MusicDevice)
         end
         au

@@ -14,4 +14,15 @@ module Kernel
       raise RuntimeError, message
     end
   end
+  
+  def OSType(arg)
+    case arg
+    when String
+      arg.ljust(4)[0..3].to_bytes
+    when Integer
+      arg
+    else
+      raise RuntimeError, "Cannot coerce #{arg} to OSType"
+    end
+  end
 end
