@@ -1,11 +1,14 @@
+MAC_ERRORS = {}
+
 module Kernel
-  def require_noerr(*args)
+  def require_noerr(error_string = nil)
     osstatus = yield
     if osstatus != 0
-      message = ""
-      message << args.shift if args.first.kind_of?(String)
-      table = args.first.kind_of?(Hash) ? args.shift : {}
-      if error = table[osstatus]
+      message = "[#{osstatus}]"
+      if error_string
+        message << " " << error_string
+      end
+      if error = MAC_ERRORS[osstatus]
         message << ": " << error
       end
       raise RuntimeError, message
