@@ -79,6 +79,9 @@ module AudioToolbox
     end
     
     def add_node(component_description)
+      if component_description.kind_of?(Hash)
+        component_description = ComponentManager::ComponentDescription.from_hash(component_description)
+      end
       node_ptr = FFI::MemoryPointer.new(:pointer)
       require_noerr("AUGraphAddNode") {
         AudioToolbox.AUGraphAddNode(@graph, component_description, node_ptr)

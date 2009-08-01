@@ -1,17 +1,8 @@
 require 'core_audio'
 
 graph = AudioToolbox::AUGraph.new
-
-cd = ComponentManager::ComponentDescription.new
-cd[:componentType] = 'aumu'.to_ostype
-cd[:componentSubType] = 'dls '.to_ostype
-cd[:componentManufacturer] = 'appl'.to_ostype
-cd[:componentFlags] = cd[:componentFlagsMask] = 0
-graph.add_node(cd)
-
-cd[:componentType] = 'auou'.to_ostype
-cd[:componentSubType] = 'def '.to_ostype
-graph.add_node(cd)
+graph.add_node(:type => 'aumu', :sub_type => 'dls ', :manufacturer => 'appl')
+graph.add_node(:type => 'auou', :sub_type => 'def ', :manufacturer => 'appl')
 
 mus = graph.node_at(0)
 out = graph.node_at(1)
