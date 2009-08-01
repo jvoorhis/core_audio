@@ -7,7 +7,6 @@ graph.add_node(:type => 'auou', :sub_type => 'def ', :manufacturer => 'appl')
 mus = graph.node_at(0)
 out = graph.node_at(1)
 graph.connect_node_input(mus, 0, out, 0)
-graph.update
 graph.open
 graph.init
 graph.show
