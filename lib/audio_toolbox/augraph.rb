@@ -28,10 +28,10 @@ module AudioToolbox
         AudioToolbox.NewAUGraph(graph_ptr)
       }
       @graph = graph_ptr.read_pointer
-      @nodes = AUNodeCollection.new(self)
+      @nodes = AUNodeCollection.new(@graph)
     end
     
-    attr_reader :graph, :nodes #:nodoc:
+    attr_reader :nodes
     
     def dispose
       require_noerr("DisposeAUGraph") {
@@ -93,7 +93,7 @@ module AudioToolbox
   
   class AUNodeCollection
     def initialize(graph)
-      @graph = graph.graph
+      @graph = graph
       @cache = Set.new
       @index = Hash.new do |nodes, ind|
         node_ptr = FFI::MemoryPointer.new(:uint32)
