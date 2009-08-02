@@ -4,7 +4,7 @@ graph = AudioToolbox::AUGraph.new
 mus = graph.nodes.add(:type => :aumu, :subtype => :dls, :manufacturer => :appl)
 out = graph.nodes.add(:type => :auou, :subtype => :def, :manufacturer => :appl)
 
-graph.connect_node_input(mus, 0, out, 0)
+graph.connect(mus, 0, out, 0)
 graph.open
 graph.init
 graph.show

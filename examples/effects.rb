@@ -6,9 +6,9 @@ del = graph.nodes.add(:type => :aufx, :subtype => :dely, :manufacturer => :appl)
 rev = graph.nodes.add(:type => :aufx, :subtype => :mrev, :manufacturer => :appl)
 out = graph.nodes.add(:type => :auou, :subtype => :def, :manufacturer => :appl)
 
-graph.connect_node_input(mus, 0, del, 0)
-graph.connect_node_input(del, 0, rev, 0)
-graph.connect_node_input(rev, 0, out, 0)
+graph.connect(mus, 0, del, 0)
+graph.connect(del, 0, rev, 0)
+graph.connect(rev, 0, out, 0)
 graph.open
 graph.init
 graph.show

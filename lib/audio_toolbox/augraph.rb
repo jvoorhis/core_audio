@@ -81,7 +81,7 @@ module AudioToolbox
       }
     end
     
-    def connect_node_input(outnode, output, innode, input)
+    def connect(outnode, output, innode, input)
       require_noerr("AUGraphConnectNodeInput") {
         AudioToolbox.AUGraphConnectNodeInput(@graph, outnode.node, output, innode.node, input)
       }
