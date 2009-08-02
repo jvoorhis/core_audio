@@ -4,6 +4,7 @@ module AudioToolbox
   attach_function :AUGraphAddNode, [:pointer, :pointer, :pointer], :int
   attach_function :AUGraphConnectNodeInput, [:pointer, :int32, :uint32, :int32, :uint32], :int
   attach_function :AUGraphGetIndNode, [:pointer, :uint32, :pointer], :int
+  attach_function :AUGraphGetNodeCount, [:pointer, :pointer], :int
   attach_function :AUGraphInitialize, [:pointer], :int
   attach_function :AUGraphNodeInfo, [:pointer, :int32, :pointer, :pointer], :int
   attach_function :AUGraphOpen, [:pointer], :int
@@ -92,6 +93,8 @@ module AudioToolbox
   end
   
   class AUNodeCollection
+    include Enumerable
+    
     def initialize(graph)
       @graph = graph
       @cache = Set.new
@@ -127,6 +130,18 @@ module AudioToolbox
     def [](ind)
       @index[ind]
     end
+    
+    def size
+      out_ptr = FFI::MemoryPointer.new(:uint32)
+      require_noerr("AUGraphGetNodeCount") {
+        AudioToolbox.AUGraphGetNodeCount(@graph, out_ptr)
+      }
+      out_ptr.read_int
+    end
+    
+    def each
+      (0 ... size).each { |ind| yield self[ind] }
+    end
   end
   
   class AUNode
@@ -150,12 +165,12 @@ module AudioToolbox
     end
     
     def component_description
-      @component_description ||= (
-        cd_ptr = FFI::MemoryPointer.new(ComponentManager::ComponentDescription.size)
-        require_noerr("AUGraphNodeInfo") {
-          AudioToolbox.AUGraphNodeInfo(@graph, @node, cd_ptr, nil)
-        }
-        ComponentManager::ComponentDescription.new(cd_ptr))
+      return @component_description if @component_description
+      cd_ptr = FFI::MemoryPointer.new(ComponentManager::ComponentDescription.size)
+      require_noerr("AUGraphNodeInfo") {
+        AudioToolbox.AUGraphNodeInfo(@graph, @node, cd_ptr, nil)
+      }
+      @component_description = ComponentManager::ComponentDescription.new(cd_ptr)
     end
   end
 end
