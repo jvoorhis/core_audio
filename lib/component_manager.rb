@@ -7,15 +7,21 @@ module ComponentManager
            :componentManufacturer, :uint32,
            :componentFlags,        :ulong,
            :componentFlagsMask,    :ulong
-    
-    def self.from_hash(hash)
-      desc = new
-      desc[:componentType]         = OSType(hash[:type])
-      desc[:componentSubType]      = OSType(hash[:sub_type])
-      desc[:componentManufacturer] = OSType(hash[:manufacturer])
-      desc[:componentFlags]        = hash.fetch(:flags, 0)
-      desc[:componentFlagsMask]    = hash.fetch(:flags_mask, 0)
-      desc
+  end
+  
+  module ::Kernel
+    def ComponentDescription(opts)
+      case opts
+      when ComponentDescription then opts
+      else
+        desc = ComponentDescription.new
+        desc[:componentType]         = OSType(opts[:type])
+        desc[:componentSubType]      = OSType(opts[:subtype])
+        desc[:componentManufacturer] = OSType(opts[:manufacturer])
+        desc[:componentFlags]        = opts.fetch(:flags, 0)
+        desc[:componentFlagsMask]    = opts.fetch(:flags_mask, 0)
+        desc
+      end
     end
   end
 end

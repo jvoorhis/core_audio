@@ -116,7 +116,7 @@ module AudioToolbox
     
     def add(component_description)
       if component_description.kind_of?(Hash)
-        component_description = ComponentManager::ComponentDescription.from_hash(component_description)
+        component_description = ComponentDescription(component_description)
       end
       node_ptr = FFI::MemoryPointer.new(:pointer)
       require_noerr("AUGraphAddNode") {
