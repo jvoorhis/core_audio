@@ -82,7 +82,7 @@ module AudioToolbox
     
     def connect_node_input(outnode, output, innode, input)
       require_noerr("AUGraphConnectNodeInput") {
-        AudioToolbox.AUGraphConnectNodeInput(@graph, outnode.to_i, output, innode.to_i, input)
+        AudioToolbox.AUGraphConnectNodeInput(@graph, outnode.node, output, innode.node, input)
       }
     end
     
@@ -101,7 +101,7 @@ module AudioToolbox
           AudioToolbox.AUGraphGetIndNode(@graph, ind, node_ptr)
         }
         int = node_ptr.read_int
-        if node = @cache.detect{ |node| node.to_i == int }
+        if node = @cache.detect{ |node| node.node == int }
           node
         else
           node = AUNode.new(@graph, int)
@@ -136,6 +136,8 @@ module AudioToolbox
       @node  = node
     end
     
+    attr_reader :node
+    
     def audio_unit
       @audio_unit ||= (
         au_ptr = FFI::MemoryPointer.new(:pointer)
@@ -158,10 +160,6 @@ module AudioToolbox
           AudioToolbox.AUGraphNodeInfo(@graph, @node, cd_ptr, nil)
         }
         ComponentManager::ComponentDescription.new(cd_ptr))
-    end
-    
-    def to_i
-      @node
     end
   end
 end
