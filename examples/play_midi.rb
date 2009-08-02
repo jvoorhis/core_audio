@@ -1,8 +1,8 @@
 require 'core_audio'
 
 graph = AudioToolbox::AUGraph.new
-mus = graph.nodes.add(:type => :aumu, :subtype => :dls, :manufacturer => :appl)
-out = graph.nodes.add(:type => :auou, :subtype => :def, :manufacturer => :appl)
+mus = graph.nodes.add(:aumu, :dls, :appl)
+out = graph.nodes.add(:auou, :def, :appl)
 
 graph.connect(mus, 0, out, 0)
 graph.open
