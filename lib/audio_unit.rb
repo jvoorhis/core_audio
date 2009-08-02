@@ -6,6 +6,12 @@ module AudioUnit
   
   class AudioUnit < FFI::Struct
     layout :data, [:long, 1]
+    
+    def extend_with_component_description(component_description)
+      if component_description[:componentType] == OSType('aumu')
+        extend(MusicDevice)
+      end
+    end
   end
   
   module MusicDevice

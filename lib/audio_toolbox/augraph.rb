@@ -139,18 +139,14 @@ module AudioToolbox
     attr_reader :node
     
     def audio_unit
-      @audio_unit ||= (
-        au_ptr = FFI::MemoryPointer.new(:pointer)
-        require_noerr("AUGraphNodeInfo") {
-          AudioToolbox.AUGraphNodeInfo(@graph, @node, nil, au_ptr)
-        }
-        au = AudioUnit::AudioUnit.new(au_ptr.read_pointer)
-        case component_description[:componentType]
-        when OSType('aumu')
-          au.extend(AudioUnit::MusicDevice)
-        end
-        au
-        )
+      return @audio_unit if @audio_unit
+      au_ptr = FFI::MemoryPointer.new(:pointer)
+      require_noerr("AUGraphNodeInfo") {
+        AudioToolbox.AUGraphNodeInfo(@graph, @node, nil, au_ptr)
+      }
+      au = AudioUnit::AudioUnit.new(au_ptr.read_pointer)
+      au.extend_with_component_description(component_description)
+      @audio_unit = au
     end
     
     def component_description
