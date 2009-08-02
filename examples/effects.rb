@@ -1,10 +1,10 @@
 require 'core_audio'
 
 graph = AudioToolbox::AUGraph.new
-mus = graph.nodes.add(:type => 'aumu', :sub_type => 'dls ', :manufacturer => 'appl')
-del = graph.nodes.add(:type => 'aufx', :sub_type => 'dely', :manufacturer => 'appl')
-rev = graph.nodes.add(:type => 'aufx', :sub_type => 'mrev', :manufacturer => 'appl')
-out = graph.nodes.add(:type => 'auou', :sub_type => 'def ', :manufacturer => 'appl')
+mus = graph.nodes.add(:type => :aumu, :sub_type => :dls, :manufacturer => :appl)
+del = graph.nodes.add(:type => :aufx, :sub_type => :dely, :manufacturer => :appl)
+rev = graph.nodes.add(:type => :aufx, :sub_type => :mrev, :manufacturer => :appl)
+out = graph.nodes.add(:type => :auou, :sub_type => :def, :manufacturer => :appl)
 
 graph.connect_node_input(mus, 0, del, 0)
 graph.connect_node_input(del, 0, rev, 0)

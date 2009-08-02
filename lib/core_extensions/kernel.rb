@@ -17,8 +17,8 @@ module Kernel
   
   def OSType(arg)
     case arg
-    when String
-      arg.ljust(4)[0..3].to_bytes
+    when String, Symbol
+      arg.to_s.ljust(4)[0..3].to_bytes
     when Integer
       arg
     else
