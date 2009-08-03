@@ -9,9 +9,9 @@ module MIDIDestination
   CA  = 0xd0 # Channel aftertouch
   PB  = 0xe0 # Pitch bend
   
-	def note_on(channel, note, velocity)
-		send_bytes(ON | channel, note, velocity)
-	end
+  def note_on(channel, note, velocity)
+    send_bytes(ON | channel, note, velocity)
+  end
   
   def note_off(channel, note, velocity = 0)
     send_bytes(OFF | channel, note, velocity)
