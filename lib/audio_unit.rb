@@ -1,8 +1,8 @@
+require 'audio_unit/music_device'
+
 module AudioUnit
   extend FFI::Library
   ffi_lib '/System/Library/Frameworks/AudioUnit.framework/Versions/Current/AudioUnit'
-  
-  attach_function :MusicDeviceMIDIEvent, [:pointer, :int, :int, :int, :int], :long
   
   MAC_ERRORS[-10879] = "Invalid property"
 	MAC_ERRORS[-10878] = "Invalid parameter"
@@ -25,6 +25,11 @@ module AudioUnit
 	MAC_ERRORS[-10848] = "Invalid offline render"
 	MAC_ERRORS[-10847] = "Unauthorized"
   
+  # Lookup table for AudioUnit type-specific extension modules
+  TYPE_EXTENSIONS = {
+    OSType('aumu') => MusicDevice
+  }
+  
   class AudioUnit < FFI::Struct
     layout :data, [:long, 1]
     
@@ -36,22 +41,7 @@ module AudioUnit
     private
     
     def extend_with_component_description(component_description)
-      if component_description[:componentType] == OSType('aumu')
-        extend(MusicDevice)
-      end
-    end
-  end
-  
-  module MusicDevice
-    include ::MIDIDestination
-    
-    def send_midi_bytes(*args)
-      arg0 = args[0] || 0
-      arg1 = args[1] || 0
-      arg2 = args[2] || 0
-      require_noerr("MusicDeviceMIDIEvent") {
-        ::AudioUnit.MusicDeviceMIDIEvent(self.pointer, arg0, arg1, arg2, 0)
-      }
+      Array(TYPE_EXTENSIONS[OSType('aumu')]).each(&method(:extend))
     end
   end
 end
