@@ -45,7 +45,7 @@ module AudioUnit
   module MusicDevice
     include ::MIDIDestination
     
-    def send_bytes(*args)
+    def send_midi_bytes(*args)
       arg0 = args[0] || 0
       arg1 = args[1] || 0
       arg2 = args[2] || 0
