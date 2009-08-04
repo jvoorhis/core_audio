@@ -1,6 +1,7 @@
 module AudioUnit
   attach_function :MusicDeviceMIDIEvent, [:pointer, :int, :int, :int, :int], :long
   
+  # Extension module for MusicDevices (of ComponentDescription type aumu)
   module MusicDevice
     include ::MIDIDestination
     
