@@ -157,9 +157,7 @@ module AudioToolbox
       require_noerr("AUGraphNodeInfo") {
         AudioToolbox.AUGraphNodeInfo(@graph, @node, nil, au_ptr)
       }
-      au = AudioUnit::AudioUnit.new(au_ptr.read_pointer)
-      au.extend_with_component_description(component_description)
-      @audio_unit = au
+      @audio_unit = AudioUnit::AudioUnit.new(component_description, au_ptr.read_pointer)
     end
     
     def component_description
