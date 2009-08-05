@@ -1,10 +1,9 @@
 require 'audio_unit/music_device'
+require 'audio_unit/properties'
 
 module AudioUnit
   extend FFI::Library
   ffi_lib '/System/Library/Frameworks/AudioUnit.framework/Versions/Current/AudioUnit'
-  
-  attach_function :MusicDeviceMIDIEvent, [:pointer, :int, :int, :int, :int], :long
   
   MAC_ERRORS[-10879] = "Invalid property"
 	MAC_ERRORS[-10878] = "Invalid parameter"
@@ -40,10 +39,44 @@ module AudioUnit
       extend_with_component_description(component_description)
     end
     
+    def method_missing(sym, *args, &block)
+      if property = GLOBAL_PROPERTIES[sym]
+        property_id, type = property
+        get_property(property_id, 0, 0, type)
+      else
+        super
+      end
+    end
+    
+    def get_property(property_id, scope, element, type)
+      type_size =
+        if type.is_a?(Class) && FFI::Struct > type
+          type.size
+        else
+          FFI.type_size(type)
+        end
+      data = FFI::MemoryPointer.new(type_size)
+      size = FFI::MemoryPointer.new(:uint32)
+      
+      require_noerr("AudioUnitGetProperty") {
+        ::AudioUnit.AudioUnitGetProperty(self, property_id, scope, element, data, size)
+      }
+      
+      if type.is_a?(Class) && FFI::Struct > type
+        type.new(data)
+      else
+        data.send(:"read_#{type}")
+      end
+    end
+    
     private
     
     def extend_with_component_description(component_description)
       Array(TYPE_EXTENSIONS[OSType('aumu')]).each(&method(:extend))
     end
   end
+  
+  attach_function :AudioUnitGetProperty, [:pointer, :uint32, :uint32, :uint32, :pointer, :pointer], :int
+  attach_function :AudioUnitSetProperty, [:pointer, :uint32, :uint32, :uint32, :pointer, :uint32], :int
+  attach_function :MusicDeviceMIDIEvent, [AudioUnit, :int, :int, :int, :int], :long
 end
