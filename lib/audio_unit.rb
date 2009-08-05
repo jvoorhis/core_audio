@@ -4,6 +4,8 @@ module AudioUnit
   extend FFI::Library
   ffi_lib '/System/Library/Frameworks/AudioUnit.framework/Versions/Current/AudioUnit'
   
+  attach_function :MusicDeviceMIDIEvent, [:pointer, :int, :int, :int, :int], :long
+  
   MAC_ERRORS[-10879] = "Invalid property"
 	MAC_ERRORS[-10878] = "Invalid parameter"
 	MAC_ERRORS[-10877] = "Invalid element"
