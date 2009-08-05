@@ -1,7 +1,7 @@
 module AudioUnit
   # Extension module for MusicDevices (of ComponentDescription type aumu)
   module MusicDevice
-    include ::MIDIDestination
+    include MIDIDestination
     
     def send_midi_bytes(*args)
       arg0 = args[0] || 0
