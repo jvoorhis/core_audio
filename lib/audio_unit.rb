@@ -1,5 +1,4 @@
 require 'audio_unit/music_device'
-require 'audio_unit/properties'
 
 module AudioUnit
   extend FFI::Library
@@ -39,34 +38,21 @@ module AudioUnit
       extend_with_component_description(component_description)
     end
     
-    def method_missing(sym, *args, &block)
-      if property = GLOBAL_PROPERTIES[sym]
-        property_id, type = property
-        get_property(property_id, 0, 0, type)
-      else
-        super
-      end
-    end
-    
     def get_property(property_id, scope, element, type)
-      type_size =
-        if type.is_a?(Class) && FFI::Struct > type
-          type.size
-        else
-          FFI.type_size(type)
-        end
+      type_size = FFI.size_of(type)
       data = FFI::MemoryPointer.new(type_size)
       size = FFI::MemoryPointer.new(:uint32)
-      
+      size.write_int(type_size)
       require_noerr("AudioUnitGetProperty") {
         ::AudioUnit.AudioUnitGetProperty(self, property_id, scope, element, data, size)
       }
-      
-      if type.is_a?(Class) && FFI::Struct > type
-        type.new(data)
-      else
-        data.send(:"read_#{type}")
-      end
+      data.as_type(type)
+    end
+    
+    # Global properties
+    
+    def stream_format
+      get_property(8, 0, 0, CoreAudio::AudioStreamBasicDescription)
     end
     
     private
