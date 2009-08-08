@@ -38,21 +38,40 @@ module AudioUnit
       extend_with_component_description(component_description)
     end
     
-    def get_property(property_id, scope, element, type)
-      type_size = FFI.size_of(type)
+    def get_property(property_id, scope, element, ffi_type)
+      type_size = FFI.size_of(ffi_type)
       data = FFI::MemoryPointer.new(type_size)
       size = FFI::MemoryPointer.new(:uint32)
       size.write_int(type_size)
       require_noerr("AudioUnitGetProperty") {
         ::AudioUnit.AudioUnitGetProperty(self, property_id, scope, element, data, size)
       }
-      data.as_type(type)
+      data.as_type(ffi_type)
+    end
+    
+    def set_property(property_id, scope, element, ffi_type, data)
+      if Class === ffi_type && FFI::Struct > ffi_type
+        size = data.size
+        ptr  = data
+      else
+        size = FFI.type_size(ffi_type)
+        ptr  = FFI::MemoryPointer.new(size)
+        ptr.send("write_#{ffi_type}", data)
+      end
+      require_noerr("AudioUnitSetProperty") {
+        ::AudioUnit.AudioUnitSetProperty(self, property_id, scope, element, ptr, size)
+      }
+      nil
     end
     
     # Global properties
     
     def stream_format
       get_property(8, 0, 0, CoreAudio::AudioStreamBasicDescription)
+    end
+    
+    def stream_format=(desc)
+      set_property(8, 0, 0, CoreAudio::AudioStreamBasicDescription, desc)
     end
     
     private

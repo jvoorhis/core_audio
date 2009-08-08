@@ -14,11 +14,11 @@ module FFI
   
   module_function
   
-  def size_of(type)
-    if Class === type && FFI::Struct > type
-      type.size
-    else
+  def size_of(obj)
+    if Class === obj && FFI::Struct > obj
+      obj.size
+    elsif Symbol === obj
       FFI.type_size(type)
-    end    
+    end
   end
 end
