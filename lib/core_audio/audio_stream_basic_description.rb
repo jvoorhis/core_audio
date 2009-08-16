@@ -6,6 +6,7 @@ module CoreAudio
            :bytes_per_packet, :uint32,
            :frames_per_packet, :uint32,
            :bytes_per_frame, :uint32,
+           :channels_per_frame, :uint32,
            :bits_per_channel, :uint32,
            :reserved, :uint32
   end
